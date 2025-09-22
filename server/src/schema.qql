@@ -1,0 +1,38 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type CACResponse {
+  companyName: String!
+  rcNumber: String!
+  registeredAddress: String!
+  status: String!
+}
+
+type NINResponse {
+  dateOfBirth: String!
+  fullName: String!
+  gender: String!
+  nin: String!
+  valid: Boolean!
+}
+
+type PhoneResponse {
+  carrier: String
+  phone: String!
+  valid: Boolean!
+}
+
+type Query {
+  verifyCAC(cacNumber: String!): CACResponse!
+  verifyNIN(nin: String!): NINResponse!
+  verifyPhone(phone: String!): PhoneResponse!
+  verifyTIN(tin: String!): TINResponse!
+}
+
+type TINResponse {
+  name: String!
+  taxOffice: String!
+  tin: String!
+  valid: Boolean!
+}

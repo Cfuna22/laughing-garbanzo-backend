@@ -1,0 +1,108 @@
+import { Injectable, Inject } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { CreateKioskDto } from './dto/create-kiosk.dto';
+import { kiosks, queueEntries, queues } from '../db/schema';
+import { and, count, eq, isNull } from 'drizzle-orm';
+import { UpdateKioskDto } from './dto/update-kiosk.dto';
+
+type QueueEntryWithQueue = {
+  query_entries: {
+    joinedAt: Date | null;
+    servedAt: Date | null;
+  };
+  queues: {
+    id: number;
+    kioskId: string;
+    name: string;
+  };
+};
+
+@Injectable()
+export class KioskService {
+  constructor(
+    @Inject('DRIZZLE')
+    private readonly db: NodePgDatabase<typeof import('../db/schema')>,
+  ) {}
+
+  async create(dto: CreateKioskDto) {
+    const [kiosk] = await this.db
+      .insert(kiosks)
+      .values({
+        name: dto.name,
+        location: dto.location,
+        status: dto.status,
+        // kioskId: dto.kioskId,
+      })
+      .returning();
+    return kiosk;
+  }
+
+  private calculateAverageWaitTime(entries: QueueEntryWithQueue[]) {
+    if (!entries.length) return 0;
+
+    const times = entries
+      .filter((e) => e.query_entries.joinedAt && e.query_entries.servedAt)
+      .map((e) => {
+        const servedAt = new Date(e.query_entries.servedAt!).getTime();
+        const joinedAt = new Date(e.query_entries.joinedAt!).getTime();
+        return joinedAt - servedAt;
+      });
+
+    return times.length
+      ? Math.round(times.reduce((a, b) => a + b, 0) / times.length / 600000)
+      : 0;
+  }
+
+  async getMetrics(kioskId: string) {
+    const totalQueues = await this.db
+      .select({ count: count() })
+      .from(queues)
+      .where(eq(queues.kioskId, kioskId));
+
+    const totalActiveUsers = await this.db
+      .select({ count: count() })
+      .from(queues)
+      .innerJoin(queues, eq(queueEntries.queueId, queues.id))
+      .where(and(eq(queues.kioskId, kioskId), isNull(queueEntries.servedAt)));
+
+    const entries = await this.db
+      .select()
+      .from(queueEntries)
+      .innerJoin(queues, eq(queueEntries.queueId, queues.id))
+      .where(eq(queues.kioskId, kioskId));
+
+    const avgWaitTime = this.calculateAverageWaitTime(query_entries);
+
+    return {
+      kioskId,
+      totalQueues: totalQueues[0]?.count ?? 0,
+      totalActiveUsers: totalActiveUsers[0]?.count ?? 0,
+      averageWaitTime: avgWaitTime,
+    };
+  }
+
+  async findAll() {
+    return this.db.query.kiosks.findMany();
+  }
+
+  async findOne(id: number) {
+    return this.db.query.kiosks.findFirst({ where: eq(kiosks.id, id) });
+  }
+
+  async update(id: number, dto: UpdateKioskDto) {
+    const [updated] = await this.db
+      .update(kiosks)
+      .set(dto)
+      .where(eq(kiosks.id, id))
+      .returning();
+    return updated;
+  }
+
+  async remove(id: number) {
+    const [deleted] = await this.db
+      .delete(kiosks)
+      .where(eq(kiosks.id, id))
+      .returning();
+    return deleted;
+  }
+}
