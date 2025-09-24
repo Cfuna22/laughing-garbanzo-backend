@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Q-Kiosk Mobile App Design System */
+
+@layer base {
+  :root {
+    /* Q-Kiosk Brand Colors - HSL Format */
+    --qk-slate: 222 84% 4.9%;           /* #0F172A - Primary dark */
+    --qk-orange: 24 95% 53%;            /* #F97316 - Primary orange */
+    --qk-blue: 199 89% 48%;             /* #0EA5E9 - Primary blue */
+    
+    /* Background System */
+    --background: 0 0% 100%;
+    --background-secondary: 210 20% 98%;
+    --background-muted: 210 40% 96.1%;
+    
+    /* Foreground System */
+    --foreground: var(--qk-slate);
+    --foreground-muted: 215.4 16.3% 46.9%;
+    --foreground-subtle: 215.4 16.3% 65.1%;
+    
+    /* Card System */
+    --card: 0 0% 100%;
+    --card-foreground: var(--qk-slate);
+    --card-border: 214.3 31.8% 91.4%;
+    
+    /* Primary System - Q-Kiosk Orange */
+    --primary: var(--qk-orange);
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 24 95% 48%;
+    --primary-light: 24 95% 58%;
+    
+    /* Secondary System - Q-Kiosk Blue */  
+    --secondary: var(--qk-blue);
+    --secondary-foreground: 0 0% 100%;
+    --secondary-hover: 199 89% 43%;
+    --secondary-light: 199 89% 53%;
+    
+    /* Accent System - Q-Kiosk Slate */
+    --accent: var(--qk-slate);
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 222 47.4% 25%;
+    
+    /* Status Colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 45 93% 47%;
+    --warning-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Queue Status Colors */
+    --queue-waiting: 45 93% 47%;         /* Yellow for waiting */
+    --queue-active: 142 76% 36%;         /* Green for active */
+    --queue-complete: var(--qk-blue);    /* Blue for complete */
+    
+    /* UI Elements */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: var(--qk-orange);
+    --radius: 0.75rem;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--qk-orange)), hsl(var(--qk-blue)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--qk-slate)), hsl(var(--accent-light)));
+    --gradient-queue: linear-gradient(90deg, hsl(var(--queue-waiting) / 0.1), hsl(var(--queue-active) / 0.1));
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(var(--qk-slate) / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(var(--qk-slate) / 0.1), 0 2px 4px -1px hsl(var(--qk-slate) / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(var(--qk-slate) / 0.1), 0 4px 6px -2px hsl(var(--qk-slate) / 0.05);
+    --shadow-glow: 0 0 20px hsl(var(--qk-orange) / 0.3);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .dark {
+    --background: var(--qk-slate);
+    --background-secondary: 222 47.4% 8%;
+    --background-muted: 217.2 32.6% 17.5%;
+    
+    --foreground: 210 40% 98%;
+    --foreground-muted: 215 20.2% 65.1%;
+    --foreground-subtle: 215.4 16.3% 46.9%;
+    
+    --card: 222 47.4% 8%;
+    --card-foreground: 210 40% 98%;
+    --card-border: 217.2 32.6% 17.5%;
+    
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
